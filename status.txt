@@ -1,0 +1,7 @@
+playing "#{event.bot.prefix}help for help | https://discord.gg/N4YKYYPfcC for support"
+playing "Telling funny jokes! | #{event.bot.prefix}help for help | DM #{event.bot.prefix}joke for jokes! | https://discord.gg/N4YKYYPfcC for support!"
+watching "Boring ass comedy shows! | ==help for help | https://discord.gg/N4YKYYPfcC for support!"
+watching "You type!"
+watching "You type! | In #{bot.servers.size} Servers!"
+playing "Debugging... Please Wait..."
+playing "Starting Up.. Please Wait..."
