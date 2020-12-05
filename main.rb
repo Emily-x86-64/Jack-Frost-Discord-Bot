@@ -1,16 +1,19 @@
+# frozen_string_literal: true
 # Embed visualizer: https://leovoel.github.io/embed-visualizer/
 require 'rubygems'
 require 'discordrb'
 require 'httparty'
 require 'duck_duck_go'
+require 'json'
 
 prefix = '=='
 
 bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58LvA.Dm9AOKXAjDJDosjOvHmjF4BRfMI', prefix: prefix, command_doesnt_exist_message: "Sorry, that command does not exist.\nFor help you can use #{prefix}help.", no_permission_message: "Sorry, you do not have sufficent premissions to use this command.", intents: :all
 
+bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
   event.bot.online
-  event.bot.watching = "You type! | In #{bot.servers.size} Servers!"
+  event.bot.watching = "The Ohio border"
 end
 bot.command :ping do |event|
   event.channel.send_embed do |embed|
@@ -53,7 +56,6 @@ bot.command(:eval, help_available: false) do |event, *code|
     'An error occurred!'
   end
 end
-bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.command(:avatar, aliases: %i[pfp profile], arg_types: [Discordrb::User]) do |event, user|
   if event.message.mentions
     event.channel.send_embed do |embed|
@@ -163,6 +165,7 @@ bot.command :time do |event|
     next true unless reaction_event.message.id == message.id
     message.delete
   end
+  nil
 end
 bot.command :state do |event|
   states = ['Alabama',
@@ -222,7 +225,7 @@ bot.command :state do |event|
     embed.timestamp = Time.now
   end
 end
-bot.command(:gay, arg_types: [Discordrb::User]) do |event, user|
+bot.command(:isgay, arg_types: [Discordrb::User]) do |event, user|
   answers = %w[Yes No]
   if answers.sample == 'Yes'
     event.channel.send_embed do |embed|
@@ -284,7 +287,127 @@ bot.command(:prune, required_permissions: [:manage_messages]) do |event, numOfMe
   event.channel.delete_messages(messages = numOfMessages, strict = true, reason = "Deleted by Jack Frost Bot On: #{Time.now}")
   event.respond "I have deleted #{numOfMessages} messages!"
 end
-
-
+bot.command(:porn, help_available: false) do |event|
+  url = HTTParty.get "https://www.reddit.com/r/Ohio/new/.json?limit=100"
+  if event.channel.nsfw? || event.channel.pm?
+    event.channel.send_embed do |embed|
+      embed.title = "Porn"
+      embed.colour = rand(0..0xfffff)
+      embed.description = JSON.parse(url.body)
+#      embed.image = Discordrb::Webhooks::EmbedImage.new(url:)
+      embed.timestamp = Time.now
+    end
+    else
+      event.channel.send_embed do |embed|
+        embed.title = "Porn"
+        embed.colour = rand(0..0xfffff)
+        embed.description = "You need to be in a NSFW channel or a PM channel for this command to work."
+        embed.timestamp = Time.now
+    end
+  end
+end
+bot.command :captiol do |event, *state|
+  states = ['Alabama',
+            'Alaska',
+            'Arizona',
+            'Arkansas',
+            'California',
+            'Colorado',
+            'Connecticut',
+            'Delaware',
+            'Florida',
+            'Georgia',
+            'Hawaii',
+            'Idaho',
+            'Illinois',
+            'Indiana',
+            'Iowa',
+            'Kansas',
+            'Kentucky',
+            'Louisiana',
+            'Maine',
+            'Maryland',
+            'Massachusetts',
+            'Michigan',
+            'Minnesota',
+            'Mississippi',
+            'Missouri',
+            'Montana',
+            'Nebraska',
+            'Nevada',
+            'New Hampshire',
+            'New Jersey',
+            'New Mexico',
+            'New York',
+            'North Carolina',
+            'North Dakota',
+            'Ohio',
+            'Oklahoma',
+            'Oregon',
+            'Pennsylvania',
+            'Rhode Island',
+            'South Carolina',
+            'South Dakota',
+            'Tennessee',
+            'Texas',
+            'Utah',
+            'Vermont',
+            'Virginia',
+            'Washington',
+            'West Virginia',
+            'Wisconsin',
+            'Wyoming']
+  captiols = ['Montgomery',
+              'Juneau',
+              'Phoenix',
+              'Little Rock',
+              'Sacramento',
+              'Denver',
+              'Hartford',
+              'Dover',
+              'Tallahassee',
+              'Atlanta',
+              'Honolulu',
+              'Boise',
+              'Springfield',
+              'Indianapolis',
+              'Des Moines',
+              'Topeka',
+              'Frankfort',
+              'Baton Rouge',
+              'Augusta',
+              'Annapolis',
+              'Boston',
+              'Lansing',
+              'St. Paul',
+              'Jackson',
+              'Jefferson City',
+              'Helena',
+              'Lincoln',
+              'Carson City',
+              'Concord',
+              'Trenton',
+              'Santa Fe',
+              'Albany',
+              'Raleigh',
+              'Bismarck',
+              'Columbus',
+              'Oklahoma City',
+              'Salem',
+              'Harrisburg',
+              'Providence',
+              'Columbia',
+              'Pierre',
+              'Nashville',
+              'Austin',
+              'Salt Lake City',
+              'Montpelier',
+              'Richmond',
+              'Olympia',
+              'Charleston',
+              'Madison',
+              'Cheyenne']
+end
+bot.command(:servers) { |event| event.respond "I am in #{event.bot.servers.size} servers" }
 at_exit { bot.stop }
 bot.run
