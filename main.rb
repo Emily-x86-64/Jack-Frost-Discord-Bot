@@ -13,7 +13,7 @@ bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58Lv
 bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
   event.bot.online
-  event.bot.watching = "The Ohio border"
+  event.bot.playing = "==help / In #{bot.servers.size} servers!"
 end
 bot.command :ping do |event|
   event.channel.send_embed do |embed|
@@ -284,8 +284,9 @@ bot.command(:join, permission_level: 1, chain_usable: false) do |event, invite|
   nil
 end
 bot.command(:prune, required_permissions: [:manage_messages]) do |event, numOfMessages|
-  event.channel.delete_messages(messages = numOfMessages, strict = true, reason = "Deleted by Jack Frost Bot On: #{Time.now}")
+  event.channel.delete_messages(messages = [numOfMessages.to_i], reason = "Deleted by Jack Frost Bot On: #{Time.now}")
   event.respond "I have deleted #{numOfMessages} messages!"
+  message.delete
 end
 bot.command(:porn, help_available: false) do |event|
   url = HTTParty.get "https://www.reddit.com/r/Ohio/new/.json?limit=100"
@@ -306,7 +307,7 @@ bot.command(:porn, help_available: false) do |event|
     end
   end
 end
-bot.command :captiol do |event, *state|
+bot.command :captiol do |event, state|
   states = ['Alabama',
             'Alaska',
             'Arizona',
@@ -409,5 +410,6 @@ bot.command :captiol do |event, *state|
               'Cheyenne']
 end
 bot.command(:servers) { |event| event.respond "I am in #{event.bot.servers.size} servers" }
+
 at_exit { bot.stop }
 bot.run

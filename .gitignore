@@ -10,7 +10,7 @@
 /test/version_tmp/
 /tmp/
 main.rb
-
+discord-bot.rb
 # Used by dotenv library to load environment variables.
 # .env
 
