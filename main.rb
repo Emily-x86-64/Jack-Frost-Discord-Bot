@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Embed visualizer: https://leovoel.github.io/embed-visualizer/
 require 'rubygems'
 require 'discordrb'
@@ -57,7 +58,7 @@ bot.command(:eval, help_available: false) do |event, *code|
   end
 end
 bot.command(:avatar, aliases: %i[pfp profile], arg_types: [Discordrb::User]) do |event, user|
-  if event.message.mentions
+  if user == nil
     event.channel.send_embed do |embed|
       embed.title = 'Avatar!'
       embed.colour = rand(0..0xfffff)
