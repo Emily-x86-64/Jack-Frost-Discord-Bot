@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # Embed visualizer: https://leovoel.github.io/embed-visualizer/
 require 'rubygems'
 require 'discordrb'
@@ -9,12 +8,12 @@ require 'json'
 
 prefix = '=='
 
-bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58LvA.Dm9AOKXAjDJDosjOvHmjF4BRfMI', prefix: prefix, command_doesnt_exist_message: "Sorry, that command does not exist.\nFor help you can use #{prefix}help.", no_permission_message: "Sorry, you do not have sufficent premissions to use this command.", intents: :all
+bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58LvA.L3dnCXWcxv6jqIkBRuHv9nN3HAs', prefix: prefix, command_doesnt_exist_message: "Sorry, that command does not exist.\nFor help you can use #{prefix}help.", no_permission_message: "Sorry, you do not have sufficent premissions to use this command.", intents: :all
 
 bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
-  event.bot.online
-  event.bot.playing = "==help / In #{bot.servers.size} servers!"
+  event.bot.dnd
+  event.bot.playing = "Debugging, Please Wait..."
 end
 bot.command :ping do |event|
   event.channel.send_embed do |embed|
@@ -129,6 +128,7 @@ bot.command(:server_list, help_available: false) { |_event| bot.servers.to_s }
 bot.command(:server, description: 'A command that tells the server name to the user') { |event| event.respond "This servers name is: #{event.server.name}" }
 bot.command(:owner, description: 'A command that will echo the owner of the server') { |event| event.respond "The owner of this server is: #{event.server.owner.mention}" }
 bot.command(:members, description: 'A command that will echo how many members a server has') { |event| event.respond "This server has #{event.server.member_count} members" }
+bot.command(:servers) { |event| event.respond "I am in #{event.bot.servers.size} servers" }
 bot.command(:random, description: 'Will pick a set of random numbers that the user defines') do |event, min, max|
   event.channel.send_embed do |embed|
     embed.title = 'Random!'
@@ -266,12 +266,12 @@ bot.command :joke do |event|
     end
   end
 end
-bot.command(:ban, required_permissions: [:ban_members], arg_types: [Discordrb::User]) do |event, user, reason|
-  event.server.ban(user, reason: reason)
+bot.command(:ban, required_permissions: [:ban_members], arg_types: [Discordrb::User]) do |event, user, *reason|
+  event.server.ban(user, reason.join(' '))
   event.respond "I have banned #{user.mention}."
 end
-bot.command(:kick, required_permissions: [:kick_members], arg_types: [Discordrb::User]) do |event, user, reason|
-  event.server.kick(user, reason: reason)
+bot.command(:kick, required_permissions: [:kick_members], arg_types: [Discordrb::User]) do |event, user, *reason|
+  event.server.kick(user, reason.join(' '))
   event.respond "I have kicked #{user.mention}."
 end
 bot.command :italic do |_event, *args|
@@ -280,7 +280,7 @@ end
 bot.command :bold do |_event, *args|
   "**#{args.join(' ')}**"
 end
-bot.command(:join, permission_level: 1, chain_usable: false) do |event, invite|
+bot.command(:join, permission_level: 1) do |event, invite|
   event.bot.join invite
   nil
 end
@@ -410,7 +410,7 @@ bot.command :captiol do |event, state|
               'Madison',
               'Cheyenne']
 end
-bot.command(:servers) { |event| event.respond "I am in #{event.bot.servers.size} servers" }
+
 
 at_exit { bot.stop }
 bot.run
