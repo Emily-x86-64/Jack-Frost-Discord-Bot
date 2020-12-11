@@ -6,14 +6,20 @@ require 'httparty'
 require 'duck_duck_go'
 require 'json'
 
-prefix = '=='
-
-bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58LvA.L3dnCXWcxv6jqIkBRuHv9nN3HAs', prefix: prefix, command_doesnt_exist_message: "Sorry, that command does not exist.\nFor help you can use #{prefix}help.", no_permission_message: "Sorry, you do not have sufficent premissions to use this command.", intents: :all
+bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58LvA.L3dnCXWcxv6jqIkBRuHv9nN3HAs', prefix: "==", command_doesnt_exist_message: "Sorry, that command does not exist.\nFor help you can use ==help.", no_permission_message: "Sorry, you do not have sufficent premissions to use this command.", intents: :all, advanced_functionality: true, client_id: 772541924782505985
 
 bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
-  event.bot.dnd
-  event.bot.playing = "Debugging, Please Wait..."
+  event.bot.online
+  event.bot.playing = "==help for help / In #{bot.servers.size} Servers!"
+end
+bot.server_create do |event|
+  event.server.default_channel.send_embed do |embed|
+    embed.title = "Thanks for adding me!"
+    embed.colour = rand(0..0xfffff)
+    embed.description = "Thanks for adding *Jack Frost Discord Bot* to your server! This bot was made in part by <@764610177093599322> and <@83283213010599936>. For help you can use the *==help* command to get started with some of the commands! Have fun!"
+    embed.timestamp = Time.now
+  end
 end
 bot.command :ping do |event|
   event.channel.send_embed do |embed|
@@ -47,7 +53,7 @@ bot.command(:shutdown, help_available: false) do |event|
   bot.send_message(event.channel.id, 'Bot is shutting down')
   exit
 end
-bot.command(:eval, help_available: false) do |event, *code|
+bot.command(:eval, help_available: false, usage: 'eval code') do |event, *code|
   break unless event.user.id == 764_610_177_093_599_322
 
   begin
@@ -57,25 +63,14 @@ bot.command(:eval, help_available: false) do |event, *code|
   end
 end
 bot.command(:avatar, aliases: %i[pfp profile], arg_types: [Discordrb::User]) do |event, user|
-  if user == nil
     event.channel.send_embed do |embed|
       embed.title = 'Avatar!'
       embed.colour = rand(0..0xfffff)
       embed.description = "Avatar of #{user.mention}:"
-      embed.image = Discordrb::Webhooks::EmbedImage.new(url: user.avatar_url(format = 'png'))
+      embed.image = Discordrb::Webhooks::EmbedImage.new(url: user.avatar_url)
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Looking fresh!!')
       embed.timestamp = Time.now
     end
-  else
-    event.channel.send_embed do |embed|
-      embed.title = 'Avatar!'
-      embed.colour = rand(0..0xfffff)
-      embed.description = "Avatar of #{event.user.mention}:"
-      embed.image = Discordrb::Webhooks::EmbedImage.new(url: user.avatar_url(format = 'png'))
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Looking fresh!!')
-      embed.timestamp = Time.now
-    end
-  end
 end
 bot.command(:embed_test, aliases: %i[embed], help_available: false) do |event|
   break unless event.user.id == 764_610_177_093_599_322
@@ -97,7 +92,7 @@ bot.command(:embed_test, aliases: %i[embed], help_available: false) do |event|
     embed.add_field(name: ':transgender_flag:', value: 'are inline fields', inline: true)
   end
 end
-bot.command(:eight_ball, aliases: %i[8b 8ball], description: 'A command that works like an 8-Ball') do |event, *question|
+bot.command(:eight_ball, aliases: %i[8b 8ball], description: 'A command that works like an 8-Ball', usage: '8ball question') do |event, *question|
   responses = ['It is decidedly so.',
                'Without a doubt.',
                'Yes - definitely.',
@@ -129,7 +124,7 @@ bot.command(:server, description: 'A command that tells the server name to the u
 bot.command(:owner, description: 'A command that will echo the owner of the server') { |event| event.respond "The owner of this server is: #{event.server.owner.mention}" }
 bot.command(:members, description: 'A command that will echo how many members a server has') { |event| event.respond "This server has #{event.server.member_count} members" }
 bot.command(:servers) { |event| event.respond "I am in #{event.bot.servers.size} servers" }
-bot.command(:random, description: 'Will pick a set of random numbers that the user defines') do |event, min, max|
+bot.command(:random, description: 'Will pick a set of random numbers that the user defines', usage: 'random min max') do |event, min, max|
   event.channel.send_embed do |embed|
     embed.title = 'Random!'
     embed.colour = rand(0..0xfffff)
@@ -226,20 +221,20 @@ bot.command :state do |event|
     embed.timestamp = Time.now
   end
 end
-bot.command(:isgay, arg_types: [Discordrb::User]) do |event, user|
+bot.command(:iscool, arg_types: [Discordrb::User]) do |event, user|
   answers = %w[Yes No]
   if answers.sample == 'Yes'
     event.channel.send_embed do |embed|
-      embed.title = 'Gay'
+      embed.title = 'Cool'
       embed.colour = rand(0..0xfffff)
-      embed.description = "Yes #{user.mention} is gay"
+      embed.description = "Yes #{user.mention} is cool"
       embed.timestamp = Time.now
     end
   else
     event.channel.send_embed do |embed|
-      embed.title = 'Gay'
+      embed.title = 'Cool'
       embed.colour = rand(0..0xfffff)
-      embed.description = "No #{user.mention} is not gay"
+      embed.description = "No #{user.mention} is not cool"
       embed.timestamp = Time.now
     end
   end
@@ -280,33 +275,10 @@ end
 bot.command :bold do |_event, *args|
   "**#{args.join(' ')}**"
 end
-bot.command(:join, permission_level: 1) do |event, invite|
-  event.bot.join invite
-  nil
-end
 bot.command(:prune, required_permissions: [:manage_messages]) do |event, numOfMessages|
-  event.channel.delete_messages(messages = [numOfMessages.to_i], reason = "Deleted by Jack Frost Bot On: #{Time.now}")
-  event.respond "I have deleted #{numOfMessages} messages!"
+  event.channel.prune(numOfMessages.to_i + 1, true, "Deleted By Jack Frost Bot on #{Time.now}")
+  message = event.respond "I have deleted #{numOfMessages} messages!"
   message.delete
-end
-bot.command(:porn, help_available: false) do |event|
-  url = HTTParty.get "https://www.reddit.com/r/Ohio/new/.json?limit=100"
-  if event.channel.nsfw? || event.channel.pm?
-    event.channel.send_embed do |embed|
-      embed.title = "Porn"
-      embed.colour = rand(0..0xfffff)
-      embed.description = JSON.parse(url.body)
-#      embed.image = Discordrb::Webhooks::EmbedImage.new(url:)
-      embed.timestamp = Time.now
-    end
-    else
-      event.channel.send_embed do |embed|
-        embed.title = "Porn"
-        embed.colour = rand(0..0xfffff)
-        embed.description = "You need to be in a NSFW channel or a PM channel for this command to work."
-        embed.timestamp = Time.now
-    end
-  end
 end
 bot.command :captiol do |event, state|
   states = ['Alabama',
@@ -410,7 +382,9 @@ bot.command :captiol do |event, state|
               'Madison',
               'Cheyenne']
 end
-
+bot.command(:echo, aliases: %i[print]) do |event, *words|
+  words.join(' ')
+end
 
 at_exit { bot.stop }
 bot.run
