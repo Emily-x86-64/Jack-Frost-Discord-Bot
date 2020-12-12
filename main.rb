@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 # Embed visualizer: https://leovoel.github.io/embed-visualizer/
-require 'rubygems'
 require 'discordrb'
 require 'httparty'
 require 'duck_duck_go'
 require 'json'
+require 'yaml'
 
-config = File.foreach('config.txt').map { |line| line.split(' ').join(' ') }
-token = config[0].to_s
+CONFIG = OpenStruct.new YAML.load_file 'config.yaml'
 
-bot = Discordrb::Commands::CommandBot.new token: "#{token}", prefix: "#{config[2].to_s}", command_doesnt_exist_message: "#{config[3].to_s}", no_permission_message: "#{config[4].to_s}", intents: :all, advanced_functionality: true, client_id: "#{config[1].to_s}"
+bot = Discordrb::Commands::CommandBot.new token: "#{CONFIG.token}", prefix: "#{CONFIG.prefix}", command_doesnt_exist_message: "#{CONFIG.command_not_found_message}", no_permission_message: "#{CONFIG.no_premission_message}", intents: :all, advanced_functionality: true, client_id: "#{CONFIG.client_id}"
 
 bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
