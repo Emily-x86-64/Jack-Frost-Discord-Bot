@@ -8,7 +8,7 @@ require 'yaml'
 
 CONFIG = OpenStruct.new YAML.load_file 'config.yaml'
 
-bot = Discordrb::Commands::CommandBot.new token: "#{CONFIG.token}", prefix: "#{CONFIG.prefix}", command_doesnt_exist_message: "#{CONFIG.command_not_found_message}", no_permission_message: "#{CONFIG.no_premission_message}", intents: :all, advanced_functionality: true, client_id: "#{CONFIG.client_id}"
+bot = Discordrb::Commands::CommandBot.new token: CONFIG.token, prefix: CONFIG.prefix, command_doesnt_exist_message: CONFIG.command_not_found_message, no_permission_message: CONFIG.no_premission_message, advanced_functionality: true, client_id: CONFIG.client_id
 
 bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
@@ -22,6 +22,10 @@ bot.server_create do |event|
     embed.description = "Thanks for adding *Jack Frost Discord Bot* to your server! This bot was made in part by <@764610177093599322> and <@83283213010599936>. For help you can use the *==help* command to get started with some of the commands! Have fun!"
     embed.timestamp = Time.now
   end
+  puts "Bot was added to #{event.server.name}."
+end
+bot.server_delete do |event|
+  puts "Bot was removed from a server."
 end
 bot.command(:ping, aliases: %i[pong], description: "Sends the bots ping time") do |event|
   event.channel.send_embed do |embed|
