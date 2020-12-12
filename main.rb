@@ -21,7 +21,7 @@ bot.server_create do |event|
     embed.timestamp = Time.now
   end
 end
-bot.command :ping do |event|
+bot.command(:ping, aliases: %i[pong], description: "Sends the bots ping time") do |event|
   event.channel.send_embed do |embed|
     embed.title = ':ping_pong: Ping! :ping_pong:'
     embed.colour = rand(0..0xfffff)
@@ -239,7 +239,6 @@ bot.command(:iscool, arg_types: [Discordrb::User]) do |event, user|
     end
   end
 end
-bot.command(:pong) { |event| event.respond "Ping! Time Taken: #{Time.now - event.timestamp}" }
 bot.command :joke do |event|
   sfwjoke = HTTParty.get('https://sv443.net/jokeapi/v2/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist&format=txt')
   nsfwjoke = HTTParty.get('https://sv443.net/jokeapi/v2/joke/Any?format=txt')

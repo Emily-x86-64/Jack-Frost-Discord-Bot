@@ -9,8 +9,7 @@
 /test/tmp/
 /test/version_tmp/
 /tmp/
-# main.rb
-# discord-bot.rb
+status.txt
 
 # Used by dotenv library to load environment variables.
 # .env
@@ -53,7 +52,7 @@ build-iPhoneSimulator/
 # .ruby-gemset
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
-.rvmrc
+# .rvmrc
 
 # Used by RuboCop. Remote config files pulled in from inherit_from directive.
  .rubocop-https?--*
