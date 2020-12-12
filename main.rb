@@ -6,7 +6,10 @@ require 'httparty'
 require 'duck_duck_go'
 require 'json'
 
-bot = Discordrb::Commands::CommandBot.new token: 'NzcyNTQxOTI0NzgyNTA1OTg1.X58LvA.L3dnCXWcxv6jqIkBRuHv9nN3HAs', prefix: "==", command_doesnt_exist_message: "Sorry, that command does not exist.\nFor help you can use ==help.", no_permission_message: "Sorry, you do not have sufficent premissions to use this command.", intents: :all, advanced_functionality: true, client_id: 772541924782505985
+config = File.foreach('config.txt').map { |line| line.split(' ').join(' ') }
+token = config[0].to_s
+
+bot = Discordrb::Commands::CommandBot.new token: "#{token}", prefix: "#{config[2].to_s}", command_doesnt_exist_message: "#{config[3].to_s}", no_permission_message: "#{config[4].to_s}", intents: :all, advanced_functionality: true, client_id: "#{config[1].to_s}"
 
 bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
 bot.ready do |event|
