@@ -6,28 +6,28 @@ require 'duck_duck_go'
 require 'json'
 require 'yaml'
 
-CONFIG = OpenStruct.new YAML.load_file 'config.yaml'
+CONFIG = OpenStruct.new YAML.load_file 'data/config.yaml'
 
 bot = Discordrb::Commands::CommandBot.new token: CONFIG.token, prefix: CONFIG.prefix, command_doesnt_exist_message: CONFIG.command_not_found_message, no_permission_message: CONFIG.no_premission_message, advanced_functionality: true, client_id: CONFIG.client_id
 
-bot.mention { |event| event.respond "My prefix for this guild is #{event.bot.prefix}\nFor help use #{event.bot.prefix}help" }
+bot.mention { |event| event.respond "My prefix for this guild is #{CONFIG.prefix}\nFor help use #{CONFIG.prefix}help" }
 bot.ready do |event|
   event.bot.online
-  event.bot.playing = "==help for help / In #{bot.servers.size} Servers!"
+  event.bot.playing = CONFIG.game
 end
 bot.server_create do |event|
   event.server.default_channel.send_embed do |embed|
-    embed.title = "Thanks for adding me!"
+    embed.title = 'Thanks for adding me!'
     embed.colour = rand(0..0xfffff)
-    embed.description = "Thanks for adding *Jack Frost Discord Bot* to your server! This bot was made in part by <@764610177093599322> and <@83283213010599936>. For help you can use the *==help* command to get started with some of the commands! Have fun!"
+    embed.description = 'Thanks for adding *Jack Frost Discord Bot* to your server! This bot was made in part by <@764610177093599322> and <@83283213010599936>. For help you can use the *==help* command to get started with some of the commands! Have fun!'
     embed.timestamp = Time.now
   end
   puts "Bot was added to #{event.server.name}."
 end
 bot.server_delete do |event|
-  puts "Bot was removed from a server."
+  puts 'Bot was removed from a server.'
 end
-bot.command(:ping, aliases: %i[pong], description: "Sends the bots ping time") do |event|
+bot.command(:ping, aliases: %i[pong], description: 'Sends the bots ping time') do |event|
   event.channel.send_embed do |embed|
     embed.title = ':ping_pong: Ping! :ping_pong:'
     embed.colour = rand(0..0xfffff)
@@ -44,23 +44,23 @@ bot.command :clinc do |event|
     embed.timestamp = Time.now
   end
 end
-bot.command(:invite, description: "Will give a invite to the support server and a link to add the bot to a server") do |event|
+bot.command(:invite, description: 'Will give a invite to the support server and a link to add the bot to a server') do |event|
   event.channel.send_embed do |embed|
     embed.title = 'Invite me to your server!'
     embed.colour = rand(0..0xfffff)
-    embed.url = bot.invite_url(permission_bits: 2147483647)
+    embed.url = bot.invite_url(permission_bits: 2_147_483_647)
     embed.description = 'For help with the bot you can join [this server](https://discord.gg/N4YKYYPfcC)'
     embed.timestamp = Time.now
   end
 end
 bot.command(:shutdown, help_available: false) do |event|
-  break unless event.user.id == 764_610_177_093_599_322
+  break unless event.user.id == CONFIG.owner
 
   bot.send_message(event.channel.id, 'Bot is shutting down')
   exit
 end
 bot.command(:eval, help_available: false, usage: 'eval code') do |event, *code|
-  break unless event.user.id == 764_610_177_093_599_322
+  break unless event.user.id == CONFIG.owner
 
   begin
     eval(code.join(' ')).to_s
@@ -79,7 +79,7 @@ bot.command(:avatar, aliases: %i[pfp profile], arg_types: [Discordrb::User]) do 
     end
 end
 bot.command(:embed_test, aliases: %i[embed], help_available: false) do |event|
-  break unless event.user.id == 764_610_177_093_599_322
+  break unless event.user.id == CONFIG.owner
 
   event.channel.send_embed("this `supports` __a__ **subset** *of* ~~markdown~~ 😃 ```js\nfunction foo(bar) {\n  console.log(bar);\n}\n\nfoo(1);```") do |embed|
     embed.title = 'title ~~(did you know you can have markdown here too?)~~'
@@ -389,6 +389,14 @@ bot.command :captiol do |event, state|
 end
 bot.command(:echo, aliases: %i[print]) do |event, *words|
   words.join(' ')
+end
+bot.command(:userinfo, arg_types: [Discordrb::User]) do |event, user|
+  event.channel.send_embed do |embed|
+    embed.title = "Info for: #{user.mention}"
+    embed.colour = rand(0..0xfffff)
+    embed.description = "Username: #{user.member.display_name}\nUser ID: #{user.id}\nAccount Creation Date: #{user.creation_time}"
+    embed.timestamp = Time.now
+  end
 end
 
 at_exit { bot.stop }
