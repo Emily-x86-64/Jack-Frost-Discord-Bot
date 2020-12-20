@@ -1,5 +1,7 @@
 # frozen_string_literal: true
+
 # Embed visualizer: https://leovoel.github.io/embed-visualizer/
+
 require 'discordrb'
 require 'httparty'
 require 'duck_duck_go'
@@ -14,6 +16,7 @@ bot.mention { |event| event.respond "My prefix for this guild is #{CONFIG.prefix
 bot.ready do |event|
   event.bot.online
   event.bot.playing = CONFIG.game
+  puts 'The bot is online!'
 end
 bot.server_create do |event|
   event.server.default_channel.send_embed do |embed|
@@ -69,14 +72,14 @@ bot.command(:eval, help_available: false, usage: 'eval code') do |event, *code|
   end
 end
 bot.command(:avatar, aliases: %i[pfp profile], arg_types: [Discordrb::User]) do |event, user|
-    event.channel.send_embed do |embed|
-      embed.title = 'Avatar!'
-      embed.colour = rand(0..0xfffff)
-      embed.description = "Avatar of #{user.mention}:"
-      embed.image = Discordrb::Webhooks::EmbedImage.new(url: user.avatar_url)
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Looking fresh!!')
-      embed.timestamp = Time.now
-    end
+  event.channel.send_embed do |embed|
+    embed.title = 'Avatar!'
+    embed.colour = rand(0..0xfffff)
+    embed.description = "Avatar of #{user.mention}:"
+    embed.image = Discordrb::Webhooks::EmbedImage.new(url: user.avatar_url)
+    embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Looking fresh!!')
+    embed.timestamp = Time.now
+  end
 end
 bot.command(:embed_test, aliases: %i[embed], help_available: false) do |event|
   break unless event.user.id == CONFIG.owner
@@ -165,6 +168,7 @@ bot.command :time do |event|
   message.react "\u274c"
   bot.add_await(:"delete_#{message.id}", Discordrb::Events::ReactionAddEvent, emoji: "\u274c") do |reaction_event|
     next true unless reaction_event.message.id == message.id
+
     message.delete
   end
   nil
@@ -280,9 +284,9 @@ end
 bot.command :bold do |_event, *args|
   "**#{args.join(' ')}**"
 end
-bot.command(:prune, required_permissions: [:manage_messages]) do |event, numOfMessages|
-  event.channel.prune(numOfMessages.to_i + 1, true, "Deleted By Jack Frost Bot on #{Time.now}")
-  message = event.respond "I have deleted #{numOfMessages} messages!"
+bot.command(:prune, required_permissions: [:manage_messages]) do |event, num_of_messages|
+  event.channel.prune(num_of_messages.to_i + 1, true, "Deleted By Jack Frost Bot on #{Time.now}")
+  message = event.respond "I have deleted #{num_of_messages} messages!"
   message.delete
 end
 bot.command :captiol do |event, state|
