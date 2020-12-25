@@ -66,7 +66,7 @@ bot.command(:eval, help_available: false, usage: 'eval code') do |event, *code|
   break unless event.user.id == CONFIG.owner
 
   begin
-    eval(code.join(' ')).to_s
+    eval(code.join(' '))
   rescue StandardError
     'An error occurred!'
   end
