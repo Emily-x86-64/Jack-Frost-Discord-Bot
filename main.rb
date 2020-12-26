@@ -62,13 +62,13 @@ bot.command(:shutdown, help_available: false) do |event|
   bot.send_message(event.channel.id, 'Bot is shutting down')
   exit
 end
-bot.command(:eval, help_available: false, usage: 'eval code') do |event, *code|
+bot.command(:eval, help_available: false, usage: "eval ```rb\ncode\n```") do |event, *code|
   break unless event.user.id == CONFIG.owner
 
   begin
-    eval(code.join(' '))
+    eval code.join(' ')[/``@`(.*?)``@`/, 1]
   rescue StandardError
-    'An error occurred!'
+    'An error occurred, please check the console.'
   end
 end
 bot.command(:avatar, aliases: %i[pfp profile], arg_types: [Discordrb::User]) do |event, user|
