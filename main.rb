@@ -35,7 +35,6 @@ bot.command(:ping, aliases: %i[pong], description: 'Sends the bots ping time') d
     embed.title = ':ping_pong: Ping! :ping_pong:'
     embed.colour = rand(0..0xfffff)
     embed.description = "Pong! Time taken: #{Time.now - event.timestamp} seconds."
-    embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Jack Frost Bot')
     embed.timestamp = Time.now
   end
 end
@@ -62,12 +61,12 @@ bot.command(:shutdown, help_available: false) do |event|
   bot.send_message(event.channel.id, 'Bot is shutting down')
   exit
 end
-bot.command(:eval, help_available: false, usage: "eval ```rb\ncode\n```") do |event, *code|
+bot.command(:eval, help_available: false, usage: "==eval ```rb\ncode\n```") do |event, *code|
   break unless event.user.id == CONFIG.owner
 
   begin
     eval(code.join(' ')[/``@`(.*?)``@`/, 1])
-  rescue StandardError
+  rescue
     'An error occurred, please check the console.'
   end
 end
