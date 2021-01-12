@@ -65,7 +65,7 @@ bot.command(:eval, help_available: false, usage: "==eval ```rb\ncode\n```") do |
   break unless event.user.id == CONFIG.owner
 
   begin
-    eval(code.join(' ')[/``@`(.*?)``@`/, 1])
+    eval code.join(' ')
   rescue
     'An error occurred, please check the console.'
   end
