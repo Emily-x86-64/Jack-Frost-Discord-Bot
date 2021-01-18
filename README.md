@@ -33,7 +33,7 @@ so fill that out
 <br>when done exit out of your editor then 
 ```sh
 cd ..
-bundle install`
+bundle install
 bundle exec ruby main.rb
 ```
 and the bot should be online and you should see a message in the console saying the bot is online!
