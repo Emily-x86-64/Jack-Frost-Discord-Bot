@@ -22,14 +22,14 @@ bot.server_create do |event|
   event.server.default_channel.send_embed do |embed|
     embed.title = 'Thanks for adding me!'
     embed.colour = rand(0..0xfffff)
-    embed.description = 'Thanks for adding *Jack Frost Discord Bot* to your server! This bot was made in part by <@764610177093599322> and <@83283213010599936>. For help you can use the *==help* command to get started with some of the commands! Have fun!'
+    embed.description = '''Thanks for adding *Jack Frost Discord Bot* to your server! This bot was made in part by
+    <@865791552864649297> and <@83283213010599936>. For help you can use the *==help* command to get started with some
+    of the commands! Have fun!'''
     embed.timestamp = Time.now
   end
   puts "Bot was added to #{event.server.name}."
 end
-bot.server_delete do |event|
-  puts 'Bot was removed from a server.'
-end
+bot.server_delete { puts 'Bot was removed from a server.' }
 bot.command(:ping, aliases: %i[pong], description: 'Sends the bots ping time') do |event|
   event.channel.send_embed do |embed|
     embed.title = ':ping_pong: Ping! :ping_pong:'
@@ -172,64 +172,6 @@ bot.command :time do |event|
   end
   nil
 end
-bot.command :state do |event|
-  states = ['Alabama',
-            'Alaska',
-            'Arizona',
-            'Arkansas',
-            'California',
-            'Colorado',
-            'Connecticut',
-            'Delaware',
-            'Florida',
-            'Georgia',
-            'Hawaii',
-            'Idaho',
-            'Illinois',
-            'Indiana',
-            'Iowa',
-            'Kansas',
-            'Kentucky',
-            'Louisiana',
-            'Maine',
-            'Maryland',
-            'Massachusetts',
-            'Michigan',
-            'Minnesota',
-            'Mississippi',
-            'Missouri',
-            'Montana',
-            'Nebraska',
-            'Nevada',
-            'New Hampshire',
-            'New Jersey',
-            'New Mexico',
-            'New York',
-            'North Carolina',
-            'North Dakota',
-            'Ohio',
-            'Oklahoma',
-            'Oregon',
-            'Pennsylvania',
-            'Rhode Island',
-            'South Carolina',
-            'South Dakota',
-            'Tennessee',
-            'Texas',
-            'Utah',
-            'Vermont',
-            'Virginia',
-            'Washington',
-            'West Virginia',
-            'Wisconsin',
-            'Wyoming']
-  event.channel.send_embed do |embed|
-    embed.title = 'State'
-    embed.colour = rand(0..0xfffff)
-    embed.description = "Without a doubut I would go to: #{states.sample}"
-    embed.timestamp = Time.now
-  end
-end
 bot.command(:iscool, arg_types: [Discordrb::User]) do |event, user|
   answers = %w[Yes No]
   if answers.sample == 'Yes'
@@ -288,109 +230,7 @@ bot.command(:prune, required_permissions: [:manage_messages]) do |event, num_of_
   message = event.respond "I have deleted #{num_of_messages} messages!"
   message.delete
 end
-bot.command :captiol do |event, state|
-  states = ['Alabama',
-            'Alaska',
-            'Arizona',
-            'Arkansas',
-            'California',
-            'Colorado',
-            'Connecticut',
-            'Delaware',
-            'Florida',
-            'Georgia',
-            'Hawaii',
-            'Idaho',
-            'Illinois',
-            'Indiana',
-            'Iowa',
-            'Kansas',
-            'Kentucky',
-            'Louisiana',
-            'Maine',
-            'Maryland',
-            'Massachusetts',
-            'Michigan',
-            'Minnesota',
-            'Mississippi',
-            'Missouri',
-            'Montana',
-            'Nebraska',
-            'Nevada',
-            'New Hampshire',
-            'New Jersey',
-            'New Mexico',
-            'New York',
-            'North Carolina',
-            'North Dakota',
-            'Ohio',
-            'Oklahoma',
-            'Oregon',
-            'Pennsylvania',
-            'Rhode Island',
-            'South Carolina',
-            'South Dakota',
-            'Tennessee',
-            'Texas',
-            'Utah',
-            'Vermont',
-            'Virginia',
-            'Washington',
-            'West Virginia',
-            'Wisconsin',
-            'Wyoming']
-  captiols = ['Montgomery',
-              'Juneau',
-              'Phoenix',
-              'Little Rock',
-              'Sacramento',
-              'Denver',
-              'Hartford',
-              'Dover',
-              'Tallahassee',
-              'Atlanta',
-              'Honolulu',
-              'Boise',
-              'Springfield',
-              'Indianapolis',
-              'Des Moines',
-              'Topeka',
-              'Frankfort',
-              'Baton Rouge',
-              'Augusta',
-              'Annapolis',
-              'Boston',
-              'Lansing',
-              'St. Paul',
-              'Jackson',
-              'Jefferson City',
-              'Helena',
-              'Lincoln',
-              'Carson City',
-              'Concord',
-              'Trenton',
-              'Santa Fe',
-              'Albany',
-              'Raleigh',
-              'Bismarck',
-              'Columbus',
-              'Oklahoma City',
-              'Salem',
-              'Harrisburg',
-              'Providence',
-              'Columbia',
-              'Pierre',
-              'Nashville',
-              'Austin',
-              'Salt Lake City',
-              'Montpelier',
-              'Richmond',
-              'Olympia',
-              'Charleston',
-              'Madison',
-              'Cheyenne']
-end
-bot.command(:echo, aliases: %i[print]) do |event, *words|
+bot.command(:echo, aliases: %i[print]) do |_event, *words|
   words.join(' ')
 end
 bot.command(:userinfo, arg_types: [Discordrb::User]) do |event, user|
